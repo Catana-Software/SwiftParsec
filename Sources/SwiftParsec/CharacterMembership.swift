@@ -22,7 +22,7 @@ extension Character {
     
     /// True for any space character, and the control characters \t, \n, \r, \f,
     /// \v.
-    var isSpace: Bool {
+    public var isSpace: Bool {
         
         switch self {
             
@@ -38,7 +38,7 @@ extension Character {
     
     /// True for any Unicode space character, and the control characters \t, \n,
     /// \r, \f, \v.
-    var isUnicodeSpace: Bool {
+    public var isUnicodeSpace: Bool {
         
         switch self {
             
@@ -69,6 +69,41 @@ extension Character {
             
             return true
             
+        default: return false
+            
+        }
+        
+    }
+    
+    /// True for any Unicode space character that is horizontal only.
+    public var isHorizontalSpace: Bool {
+        
+        switch self {
+            
+        case " ",
+             "\t",
+             "\u{00A0}", // non-breaking space
+             "\u{2000}", // en quad
+             "\u{2001}", // em quad
+             "\u{2002}", // en space
+             "\u{2003}", // em space
+             "\u{2004}", // three-per-em space
+             "\u{2005}", // four-per-em space
+             "\u{2006}", // six-per-em space
+             "\u{2007}", // figure space
+             "\u{2008}", // punctuation space
+             "\u{2009}", // thin space
+             "\u{200A}", // hair space
+             "\u{200B}", // zero width space
+             "\u{200C}", // zero width non-joiner
+             "\u{200D}", // zero width joiner
+             "\u{202F}", // narrow no-break space
+             "\u{205F}", // medium mathematical space
+             "\u{2060}", // word joiner
+             "\u{3000}", // ideographic space
+             "\u{FEFF}": // zero width no-break space
+                 return true
+           
         default: return false
             
         }

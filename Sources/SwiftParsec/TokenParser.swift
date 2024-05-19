@@ -240,7 +240,7 @@ extension TokenParser {
     typealias DoubleParser = GenericParser<String, UserState, Double>
     typealias IntDoubleParser =
         GenericParser<String, UserState, Either<Int, Double>>
-    typealias VoidParser = GenericParser<String, UserState, ()>
+    public typealias VoidParser = GenericParser<String, UserState, ()>
     
     //
     // Identifiers & Reserved words
@@ -805,12 +805,7 @@ extension TokenParser {
         
     }
     
-    //
-    // Private methods. They sould be in a separate private extension but it
-    // causes problems with the internal typealiases.
-    //
-    
-    private var oneLineComment: VoidParser {
+    public var oneLineComment: VoidParser {
         
         let commentStart = StrParser.string(languageDefinition.commentLine)
         
@@ -820,7 +815,7 @@ extension TokenParser {
         
     }
     
-    private var multiLineComment: VoidParser {
+    public var multiLineComment: VoidParser {
         
         return GenericParser {
             
@@ -832,6 +827,11 @@ extension TokenParser {
         }
         
     }
+    
+    //
+    // Private methods. They sould be in a separate private extension but it
+    // causes problems with the internal typealiases.
+    //
     
     private var inComment: VoidParser {
         
