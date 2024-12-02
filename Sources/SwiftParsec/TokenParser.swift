@@ -561,6 +561,16 @@ extension TokenParser {
         return lexeme(intDouble) <?> LocalizedString("number")
     }
     
+    /// This lexeme parser parses either `integer` or a `float` and returns the
+    /// value as a Double.
+    public var intOrFloat: GenericParser<String, UserState, Double> {
+        
+        let intDouble = float.attempt <|>
+            integer.map({ Double($0) })
+        
+        return lexeme(intDouble) <?> LocalizedString("integer or float")
+    }
+    
     /// Parses a positive whole number in the decimal system. Returns the value
     /// of the number.
     public static var decimal: GenericParser<String, UserState, Int> {

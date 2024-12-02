@@ -833,6 +833,89 @@ class GenericTokenParserTests: XCTestCase {
         
     }
     
+    func testIntOrFloat() {
+        
+        let java = LanguageDefinition<()>.javaStyle
+        let intOrFloat = GenericTokenParser(languageDefinition: java).intOrFloat
+        
+        // Test for success.
+        let matching = [
+            "1", "1234", "0xf", "0xF", "0xffff", "0xFFFF", "0o1", "0o1234", "0",
+            "-1", "-1234", "-0xf", "+0xF", "-0xffff", "+0xFFFF", "-0o1",
+            "-0o1234", "-0", "1.0", "1234.0", "0.0", "-1.0", "-1234.0", "-0.0",
+            "1234e5", "1.234E5", "1.234e-5", "1234E-5", "-1234e5", "-1.234E5",
+            "-1.234e-5", "-1234e-5"
+        ]
+        let expected: [Double] = [
+            1, 1234, 0xF, 0xF, 0xffff,
+            0xFFFF, 0o1, 0o1234, 0, -1,
+            -1234, -0xF, 0xF, -0xffff,
+            0xFFFF, -0o1, -0o1234, -0, .1.0,
+            1234.0, 0.0, -1.0, -1234.0,
+            -0.0, 1234e5, 1.234E5, 1.234e-5,
+            1234E-5, -1234e5, -1.234E5,
+            -1.234e-5, -1234e-5
+        ]
+        var index = 0
+        
+        let errorMessage = "GenericTokenParser.intOrFloat should succeed."
+        
+        testStringParserSuccess(number, inputs: matching) { input, result in
+            
+            let expect = expected[index]
+            index += 1
+            
+            switch result {
+                
+            case .left(let intRes):
+                
+                if case .left(let val) = expect, intRes == val {
+                    
+                    return
+                    
+                }
+                
+            case .right(let doubleRes):
+                
+                if case .right(let val) = expect, doubleRes == val {
+                    
+                    return
+                    
+                }
+                
+            }
+            
+            XCTFail(
+                self.formatErrorMessage(
+                    errorMessage,
+                    input: input,
+                    result: result
+                )
+            )
+            
+        }
+        
+        // Test when not matching.
+        let notMatching = [
+            "xf", "xF", "ffff", "FFFF", "o1", "o1234", "-xf", "+xF", "-ffff",
+            "+FFFF", "-o1", "+o1234"
+        ]
+        let shouldFailMessage = "GenericTokenParser.intOrFloat should fail."
+        
+        testStringParserFailure(number, inputs: notMatching) { input, result in
+            
+            XCTFail(
+                self.formatErrorMessage(
+                    shouldFailMessage,
+                    input: input,
+                    result: result
+                )
+            )
+            
+        }
+        
+    }
+    
     func testDecimal() {
         
         let decimal = GenericTokenParser<()>.decimal
@@ -1405,6 +1488,7 @@ extension GenericTokenParserTests {
             ("testIntegerAsFloat", testIntegerAsFloat),
             ("testFloat", testFloat),
             ("testNumber", testNumber),
+            ("testIntOrFloat", testIntOrFloat),
             ("testDecimal", testDecimal),
             ("testHexadecimal", testHexadecimal),
             ("testOctal", testOctal),
