@@ -1205,3 +1205,5 @@ public func >>-<StreamType, UserState, Result, T>(
     return parser.flatMap(transform)
     
 }
+
+extension GenericParser : Sendable { }

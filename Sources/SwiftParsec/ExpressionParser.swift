@@ -423,3 +423,5 @@ RangeReplaceableCollection, ExpressibleByArrayLiteral {
     public subscript(position: Index) -> Element { return table[position] }
     
 }
+
+extension OperatorTable : Sendable { }
