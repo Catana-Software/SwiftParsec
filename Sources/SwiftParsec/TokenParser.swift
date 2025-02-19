@@ -188,6 +188,10 @@ public protocol TokenParser {
     /// white space. Returns the string ".".
     var dot: GenericParser<String, UserState, String> { get }
     
+    /// Lexeme parser `equals` parses the character "=" and skips any trailing
+    /// white space. Returns the string "=".
+    var equals: GenericParser<String, UserState, String> { get }
+    
     /// Lexeme parser `semicolonSeperated(parser)` parses _zero_ or more
     /// occurrences of `parser` separated by `semicolon`. Returns an array of
     /// values returned by `parser`.
@@ -756,6 +760,14 @@ extension TokenParser {
     public var dot: GenericParser<String, UserState, String> {
         
         return symbol(".")
+        
+    }
+    
+    /// Lexeme parser `equals` parses the character "=" and skips any trailing
+    /// white space. Returns the string "=".
+    public var equals: GenericParser<String, UserState, String> {
+        
+        return symbol("=")
         
     }
     

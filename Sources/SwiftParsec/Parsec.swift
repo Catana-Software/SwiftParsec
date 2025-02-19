@@ -251,11 +251,18 @@ precedencegroup ChoicePrecedence {
 /// the `>>-` operator.
 infix operator <|> : ChoicePrecedence
 
+/// Precedence of map operator. It has a higher
+/// precedence than the `ChoicePrecedence` group.
+precedencegroup MapPrecedence {
+    associativity: left
+    higherThan: ChoicePrecedence
+}
+
 /// Precedence of infix operators for sequence parsing. It has a higher
 /// precedence than the `ChoicePrecedence` group.
 precedencegroup SequencePrecedence {
     associativity: left
-    higherThan: ChoicePrecedence
+    higherThan: MapPrecedence
 }
 
 /// Sequence parsing, discarding the value of the first parser. It has a higher
@@ -272,7 +279,7 @@ infix operator <*> : SequencePrecedence
 
 /// Infix operator for `Parsec.map()`. It has a higher precedence than the `<|>`
 /// operator.
-infix operator <^> : SequencePrecedence
+infix operator <^> : MapPrecedence
 
 extension Parsec {
     
