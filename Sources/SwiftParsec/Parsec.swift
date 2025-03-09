@@ -404,6 +404,7 @@ public extension Parsec where UserState == () {
 public protocol Stream: Collection, ExpressibleByArrayLiteral
 where ArrayLiteralElement == Element {}
 
+extension String: @retroactive ExpressibleByArrayLiteral { }
 extension String: Stream {
     
     /// Create an instance containing `elements`.

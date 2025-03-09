@@ -35,3 +35,9 @@ func LocalizedString(_ key: String) -> String {
     return Configuration.localizeString(key)
 
 }
+
+public func ParsecLocalizedString(_ key: String) -> String {
+    
+    return Configuration.localizeString(key)
+
+}

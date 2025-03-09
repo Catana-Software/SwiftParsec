@@ -65,7 +65,7 @@ class GenericParserTests: XCTestCase {
         
         let errorMessage = "GenericParser.apply should succeed."
         
-        let applyParser = curriedPlus <^> int99Parser <*> int1Parser
+        let applyParser = (curriedPlus <^> int99Parser) <*> int1Parser
         testParserSuccess(applyParser) { input, result in
             
             XCTAssertEqual(

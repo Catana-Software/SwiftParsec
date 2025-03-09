@@ -238,11 +238,11 @@ public protocol TokenParser {
 extension TokenParser {
     
     // Type aliases used internally to simplify the code.
-    typealias StrParser = GenericParser<String, UserState, String>
-    typealias CharacterParser = GenericParser<String, UserState, Character>
-    typealias IntParser = GenericParser<String, UserState, Int>
-    typealias DoubleParser = GenericParser<String, UserState, Double>
-    typealias IntDoubleParser =
+    public typealias StrParser = GenericParser<String, UserState, String>
+    public typealias CharacterParser = GenericParser<String, UserState, Character>
+    public typealias IntParser = GenericParser<String, UserState, Int>
+    public typealias DoubleParser = GenericParser<String, UserState, Double>
+    public typealias IntDoubleParser =
         GenericParser<String, UserState, Either<Int, Double>>
     public typealias VoidParser = GenericParser<String, UserState, ()>
     
@@ -395,7 +395,7 @@ extension TokenParser {
         
         let characterLetter = CharacterParser.satisfy { char in
             
-            char != "'" && char != "\\" && char != substituteCharacter
+            char != "'" && char != "\\" && char != TokenParserConstants.substituteCharacter
             
         }
         
@@ -423,7 +423,7 @@ extension TokenParser {
         
         let stringLetter = CharacterParser.satisfy { char in
             
-            char != "\"" && char != "\\" && char != substituteCharacter
+            char != "\"" && char != "\\" && char != TokenParserConstants.substituteCharacter
             
         }
         
@@ -506,13 +506,13 @@ extension TokenParser {
     /// the number as a `Double`.
     public var integerAsFloat: GenericParser<String, UserState, Double> {
         
-        let hexaPrefix = CharacterParser.oneOf(hexadecimalPrefixes)
+        let hexaPrefix = CharacterParser.oneOf(TokenParserConstants.hexadecimalPrefixes)
         let hexa = hexaPrefix *> GenericTokenParser.doubleWithBase(
             16,
             parser: GenericParser.hexadecimalDigit
         )
         
-        let octPrefix = CharacterParser.oneOf(octalPrefixes)
+        let octPrefix = CharacterParser.oneOf(TokenParserConstants.octalPrefixes)
         let oct = octPrefix *> GenericTokenParser.doubleWithBase(
             8,
             parser: GenericParser.octalDigit
@@ -587,7 +587,7 @@ extension TokenParser {
     /// should be prefixed with "x" or "X". Returns the value of the number.
     public static var hexadecimal: GenericParser<String, UserState, Int> {
         
-        return GenericParser.oneOf(hexadecimalPrefixes) *>
+        return GenericParser.oneOf(TokenParserConstants.hexadecimalPrefixes) *>
             numberWithBase(16, parser: GenericParser.hexadecimalDigit)
         
     }
@@ -596,7 +596,7 @@ extension TokenParser {
     /// prefixed with "o" or "O". Returns the value of the number.
     public static var octal: GenericParser<String, UserState, Int> {
         
-        return GenericParser.oneOf(octalPrefixes) *>
+        return GenericParser.oneOf(TokenParserConstants.octalPrefixes) *>
             numberWithBase(8, parser: GenericParser.octalDigit)
         
     }
@@ -907,7 +907,7 @@ extension TokenParser {
         
     }
     
-    private static var escapeCode: CharacterParser {
+    public static var escapeCode: CharacterParser {
         
         return charEscape <|> charNumber <|> charAscii <|> charControl <?>
             LocalizedString("escape code")
@@ -916,7 +916,7 @@ extension TokenParser {
     
     private static var charEscape: CharacterParser {
         
-        let parsers = escapeMap.map { escCode in
+        let parsers = TokenParserConstants.escapeMap.map { escCode in
             
             CharacterParser.character(escCode.esc) *>
                 GenericParser(result: escCode.code)
@@ -944,7 +944,7 @@ extension TokenParser {
     
     private static var charAscii: CharacterParser {
         
-        let parsers = asciiCodesMap.map { control in
+        let parsers = TokenParserConstants.asciiCodesMap.map { control in
             
             StrParser.string(control.esc) *> GenericParser(result: control.code)
             
@@ -1159,31 +1159,34 @@ extension TokenParser {
     
 }
 
-private let hexadecimalPrefixes = "xX"
-private let octalPrefixes = "oO"
-
-private let substituteCharacter: Character = "\u{001A}"
-
-private let escapeMap: [(esc: Character, code: Character)] = [
-    ("a", "\u{0007}"), ("b", "\u{0008}"), ("f", "\u{000C}"), ("n", "\n"),
-    ("r", "\r"), ("t", "\t"), ("v", "\u{000B}"), ("\\", "\\"), ("\"", "\""),
-    ("'", "'")
-]
-
-private let asciiCodesMap: [(esc: String, code:Character)] = [
-    ("NUL", "\u{0000}"), ("SOH", "\u{0001}"), ("STX", "\u{0002}"),
-    ("ETX", "\u{0003}"), ("EOT", "\u{0004}"), ("ENQ", "\u{0005}"),
-    ("ACK", "\u{0006}"), ("BEL", "\u{0007}"), ("BS", "\u{0008}"),
-    ("HT", "\u{0009}"), ("LF", "\u{000A}"), ("VT", "\u{000B}"),
-    ("FF", "\u{000C}"), ("CR", "\u{000D}"), ("SO", "\u{000E}"),
-    ("SI", "\u{000F}"),  ("DLE", "\u{0010}"), ("DC1", "\u{0011}"),
-    ("DC2", "\u{0012}"), ("DC3", "\u{0013}"), ("DC4", "\u{0014}"),
-    ("NAK", "\u{0015}"), ("SYN", "\u{0016}"), ("ETB", "\u{0017}"),
-    ("CAN", "\u{0018}"), ("EM", "\u{0019}"), ("SUB", "\u{001A}"),
-    ("ESC", "\u{001B}"),  ("FS", "\u{001C}"), ("GS", "\u{001D}"),
-    ("RS", "\u{001E}"), ("US", "\u{001F}"), ("SP", "\u{0020}"),
-    ("DEL", "\u{007F}")
-]
+public struct TokenParserConstants
+{
+    public static let hexadecimalPrefixes = "xX"
+    public static let octalPrefixes = "oO"
+    
+    public static let substituteCharacter: Character = "\u{001A}"
+    
+    public static let escapeMap: [(esc: Character, code: Character)] = [
+        ("a", "\u{0007}"), ("b", "\u{0008}"), ("f", "\u{000C}"), ("n", "\n"),
+        ("r", "\r"), ("t", "\t"), ("v", "\u{000B}"), ("\\", "\\"), ("\"", "\""),
+        ("'", "'")
+    ]
+    
+    public static let asciiCodesMap: [(esc: String, code:Character)] = [
+        ("NUL", "\u{0000}"), ("SOH", "\u{0001}"), ("STX", "\u{0002}"),
+        ("ETX", "\u{0003}"), ("EOT", "\u{0004}"), ("ENQ", "\u{0005}"),
+        ("ACK", "\u{0006}"), ("BEL", "\u{0007}"), ("BS", "\u{0008}"),
+        ("HT", "\u{0009}"), ("LF", "\u{000A}"), ("VT", "\u{000B}"),
+        ("FF", "\u{000C}"), ("CR", "\u{000D}"), ("SO", "\u{000E}"),
+        ("SI", "\u{000F}"),  ("DLE", "\u{0010}"), ("DC1", "\u{0011}"),
+        ("DC2", "\u{0012}"), ("DC3", "\u{0013}"), ("DC4", "\u{0014}"),
+        ("NAK", "\u{0015}"), ("SYN", "\u{0016}"), ("ETB", "\u{0017}"),
+        ("CAN", "\u{0018}"), ("EM", "\u{0019}"), ("SUB", "\u{001A}"),
+        ("ESC", "\u{001B}"),  ("FS", "\u{001C}"), ("GS", "\u{001D}"),
+        ("RS", "\u{001E}"), ("US", "\u{001F}"), ("SP", "\u{0020}"),
+        ("DEL", "\u{007F}")
+    ]
+}
 
 private func power(_ exp: Int) -> Double {
     

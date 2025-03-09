@@ -850,7 +850,7 @@ class GenericTokenParserTests: XCTestCase {
             1, 1234, 0xF, 0xF, 0xffff,
             0xFFFF, 0o1, 0o1234, 0, -1,
             -1234, -0xF, 0xF, -0xffff,
-            0xFFFF, -0o1, -0o1234, -0, .1.0,
+            0xFFFF, -0o1, -0o1234, -0, 1.0,
             1234.0, 0.0, -1.0, -1234.0,
             -0.0, 1234e5, 1.234E5, 1.234e-5,
             1234E-5, -1234e5, -1.234E5,
@@ -860,38 +860,12 @@ class GenericTokenParserTests: XCTestCase {
         
         let errorMessage = "GenericTokenParser.intOrFloat should succeed."
         
-        testStringParserSuccess(number, inputs: matching) { input, result in
+        testStringParserSuccess(intOrFloat, inputs: matching) { input, result in
             
             let expect = expected[index]
             index += 1
             
-            switch result {
-                
-            case .left(let intRes):
-                
-                if case .left(let val) = expect, intRes == val {
-                    
-                    return
-                    
-                }
-                
-            case .right(let doubleRes):
-                
-                if case .right(let val) = expect, doubleRes == val {
-                    
-                    return
-                    
-                }
-                
-            }
-            
-            XCTFail(
-                self.formatErrorMessage(
-                    errorMessage,
-                    input: input,
-                    result: result
-                )
-            )
+            XCTAssertEqual(result, expect)
             
         }
         
@@ -902,7 +876,7 @@ class GenericTokenParserTests: XCTestCase {
         ]
         let shouldFailMessage = "GenericTokenParser.intOrFloat should fail."
         
-        testStringParserFailure(number, inputs: notMatching) { input, result in
+        testStringParserFailure(intOrFloat, inputs: notMatching) { input, result in
             
             XCTFail(
                 self.formatErrorMessage(

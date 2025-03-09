@@ -1,4 +1,4 @@
-// swift-tools-version:4.2
+// swift-tools-version:5.5
 // The swift-tools-version declares the minimum version of Swift required to build this package.
 //
 //  Package.swift
@@ -12,6 +12,10 @@ import PackageDescription
 
 let package = Package(
     name: "SwiftParsec",
+    defaultLocalization: "en",
+    platforms: [
+        .macOS(.v12), .iOS(.v15)
+    ],
     products: [
         // Products define the executables and libraries produced by a package, and
         // make them visible to other packages.
@@ -22,5 +26,9 @@ let package = Package(
     ],
     targets: [
         .target(name: "SwiftParsec"),
+        .testTarget(
+            name: "SwiftParsecTests",
+            dependencies: ["SwiftParsec"]
+        )
     ]
 )
